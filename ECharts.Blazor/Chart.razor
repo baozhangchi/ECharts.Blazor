@@ -1,0 +1,110 @@
+@implements IChartItemContainer
+@implements IAsyncDisposable
+@using System.Timers
+@using Microsoft.JSInterop
+@inherits ChartComponentBase
+@inject IJSRuntime Js
+<div id="@_id" style="@Style" class="@Class"></div>
+<CascadingValue TValue="IChartItemContainer" Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    private readonly string _id = Guid.NewGuid().ToString("N");
+    private IJSObjectReference? _moduleTask;
+    private Timer? _timer;
+    private Title? _title;
+    private Legend? _legend;
+    private readonly List<ISeries> _series = new();
+    [Parameter] public string? Style { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+
+    public void Add(IChartItem item)
+    {
+        switch (item)
+        {
+            case Title title:
+                _title = title;
+                break;
+            case Legend legend:
+                _legend = legend;
+                break;
+            case ISeries series:
+                _series.Add(series);
+                break;
+        }
+    }
+
+    public void Remove(IChartItem item)
+    {
+        switch (item)
+        {
+            case Title title:
+                _title = null;
+                break;
+            case Legend legend:
+                _legend = null;
+                break;
+            case ISeries series:
+                _series.Remove(series);
+                break;
+        }
+    }
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        return new Dictionary<string, object?>
+        {
+            { "title", _title?.SerializeSettings() },
+            { "legend", _legend?.SerializeSettings() },
+            { "series", _series.Select(x => x.SerializeSettings()).ToArray() }
+        };
+    }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _moduleTask = await Js.InvokeAsync<IJSObjectReference>(
+                "import", "./_content/ECharts.Blazor/echartsInterop.js");
+            await _moduleTask.InvokeVoidAsync("init", _id, SerializeSettings());
+            _timer = new Timer(300);
+            _timer.Elapsed += TimerElapsed;
+        }
+    }
+
+    private void TimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        if (sender is Timer timer)
+        {
+            timer.Stop();
+            _moduleTask?.InvokeVoidAsync("setOption", _id, SerializeSettings());
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        // _timer?.Stop();
+        // _timer?.Start();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _timer?.Dispose();
+        if (_moduleTask != null)
+        {
+            try
+            {
+                await _moduleTask.DisposeAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+
+}

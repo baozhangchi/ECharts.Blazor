@@ -1,0 +1,40 @@
+@inherits ChartItemBase
+@implements ISeries
+@typeparam T
+
+@code {
+    [Parameter] public SeriesTypes Type { get; set; }
+
+    [Parameter] public string? Name { get; set; }
+
+    [Parameter] public SeriesColorBy ColorBy { get; set; }
+
+    [Parameter] public IEnumerable<T>? Data { get; set; }
+
+    [Parameter] public Func<T, object?>? ValueField { get; set; }
+
+    [Parameter] public Func<T, object>? CategoryField { get; set; }
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        return new Dictionary<string, object?>()
+        {
+            { "type", Type.ToString().ToLower() },
+            { "name", Name },
+            { "colorBy", ColorBy.ToString().ToLower() }
+        };
+    }
+
+    public enum SeriesColorBy
+    {
+        Series,
+        Data
+    }
+
+    public enum SeriesTypes
+    {
+        Line,
+        Bar
+    }
+
+}

@@ -1,0 +1,22 @@
+@inherits ChartItemBase
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter] public bool Show { get; set; } = true;
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        return new Dictionary<string, object?>()
+        {
+            {"id",Id},
+            {"show",Show},
+            {"text",Text}
+        };
+    }
+
+}

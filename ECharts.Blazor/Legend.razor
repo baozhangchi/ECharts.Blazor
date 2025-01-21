@@ -1,0 +1,23 @@
+@inherits ChartItemBase
+
+@code {
+    [Parameter] public LegendTypes Type { get; set; }
+
+    [Parameter] public bool Show { get; set; } = true;
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        return new Dictionary<string, object?>()
+        {
+            { "type", Type.ToString().ToLower() },
+            { "show", Show }
+        };
+    }
+
+    public enum LegendTypes
+    {
+        Plain,
+        Scroll
+    }
+
+}

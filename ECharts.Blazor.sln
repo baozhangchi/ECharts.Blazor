@@ -5,18 +5,51 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECharts.Blazor", "ECharts.Blazor\ECharts.Blazor.csproj", "{ED8EA78D-9D90-4BBE-9D55-3DCDF46007B6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{7FC182B7-CD20-4E1C-A273-17805C7A9A46}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		NuGet.config = NuGet.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{56EFBA8E-6AFD-460C-877A-5B30C7950212}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECharts.Blazor.Demo", "ECharts.Blazor.Demo\ECharts.Blazor.Demo\ECharts.Blazor.Demo.csproj", "{67648CA9-444A-4161-B7C2-F51567157F82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECharts.Blazor.Demo.Shared", "ECharts.Blazor.Demo\ECharts.Blazor.Demo.Shared\ECharts.Blazor.Demo.Shared.csproj", "{AC192371-5965-4CEC-AE1A-21C57E998929}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECharts.Blazor.Demo.Web", "ECharts.Blazor.Demo\ECharts.Blazor.Demo.Web\ECharts.Blazor.Demo.Web.csproj", "{82DD73D1-9B1C-4E43-AA33-257AC22E4175}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{ED8EA78D-9D90-4BBE-9D55-3DCDF46007B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED8EA78D-9D90-4BBE-9D55-3DCDF46007B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED8EA78D-9D90-4BBE-9D55-3DCDF46007B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED8EA78D-9D90-4BBE-9D55-3DCDF46007B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67648CA9-444A-4161-B7C2-F51567157F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67648CA9-444A-4161-B7C2-F51567157F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67648CA9-444A-4161-B7C2-F51567157F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67648CA9-444A-4161-B7C2-F51567157F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC192371-5965-4CEC-AE1A-21C57E998929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC192371-5965-4CEC-AE1A-21C57E998929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC192371-5965-4CEC-AE1A-21C57E998929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC192371-5965-4CEC-AE1A-21C57E998929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82DD73D1-9B1C-4E43-AA33-257AC22E4175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82DD73D1-9B1C-4E43-AA33-257AC22E4175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82DD73D1-9B1C-4E43-AA33-257AC22E4175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82DD73D1-9B1C-4E43-AA33-257AC22E4175}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{67648CA9-444A-4161-B7C2-F51567157F82} = {56EFBA8E-6AFD-460C-877A-5B30C7950212}
+		{AC192371-5965-4CEC-AE1A-21C57E998929} = {56EFBA8E-6AFD-460C-877A-5B30C7950212}
+		{82DD73D1-9B1C-4E43-AA33-257AC22E4175} = {56EFBA8E-6AFD-460C-877A-5B30C7950212}
 	EndGlobalSection
 EndGlobal
