@@ -1,20 +1,52 @@
 ﻿@page "/"
-@using System.Globalization
 
 <PageTitle>Home</PageTitle>
 <div style="display:flex; flex-direction:column; height:100%;">
-
-    <h1>Hello, world!</h1>
-    <Chart Style="flex:1;">
-        <Title Text="Chart"></Title>
-        <Legend></Legend>
-        @foreach (var item in _data.GroupBy(x => x.Name))
-        {
-            var name = item.Key;
-            var data = item.ToList();
-            <Series T="ChartData" Data="@data" Name="@name" CategoryField="x=>x.Category" ValueField="x=>x.Value"></Series>
-        }
-    </Chart>
+    <div style="display:flex">
+    </div>
+    <div style="flex:1;display:flex;flex-direction:row">
+        <Chart Style="width:calc(50% - 10px);height:300px;">
+            <Title Text="Line"></Title>
+            <Tooltip Trigger="@Tooltip.Triggers.Axis">
+                <Template>
+                    <div>
+                        @{
+                            var category = context[0]["name"].GetValue<string>();
+                            <div>@category</div>
+                        }
+                        @foreach (var item in context)
+                        {
+                            <div>
+                                <div>@(item["seriesName"].GetValue<string>())</div>
+                            </div>
+                        }
+                    </div>
+                </Template>
+            </Tooltip>
+            <Legend></Legend>
+            <XAxis></XAxis>
+            <YAxis></YAxis>
+            @foreach (var item in _data.GroupBy(x => x.Name))
+            {
+                var name = item.Key;
+                var data = item.ToList();
+                <LineSeries T="ChartData" Smooth="true" TValue="int" Symbol="SeriesSymbols.Circle" ShowSymbol="false" Data="@data" Name="@name" CategoryField="x => x.Category" ValueField="x => x.Value" ValueFormatter="@(x=>x.ToString("P"))"></LineSeries>
+            }
+        </Chart>
+        <Chart Style="width:calc(50% - 10px);height:300px;">
+            <Title Text="Bar"></Title>
+            <Tooltip Trigger="@Tooltip.Triggers.Axis"></Tooltip>
+            <Legend></Legend>
+            <XAxis></XAxis>
+            <YAxis></YAxis>
+            @foreach (var item in _data.GroupBy(x => x.Name))
+            {
+                var name = item.Key;
+                var data = item.ToList();
+                <BarSeries T="ChartData" TValue="int" Data="@data" Name="@name" CategoryField="x => x.Category" ValueField="x => x.Value"></BarSeries>
+            }
+        </Chart>
+    </div>
 </div>
 
 @code
@@ -28,32 +60,32 @@
         public int Value { get; set; }
     }
 
-    List<ChartData> _data = new List<ChartData>();
+    List<ChartData> _data = new();
 
     protected override void OnInitialized()
     {
         _data = new List<ChartData>();
         var random = new Random();
-        for (int i = 0; i < 12; i++)
+        for (var i = 0; i < 12; i++)
         {
-            _data.Add(new ChartData()
+            _data.Add(new ChartData
                 {
                     Name = "Email",
                     Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
                     Value = random.Next(i * 10 + 10, i * 100 + 100)
                 });
-            _data.Add(new ChartData()
-            {
-                Name = "QQ",
-                Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
-                Value = random.Next(i * 10 + 10, i * 100 + 100)
-            });
-            _data.Add(new ChartData()
-            {
-                Name = "WeChat",
-                Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
-                Value = random.Next(i * 10 + 10, i * 100 + 100)
-            });
+            _data.Add(new ChartData
+                {
+                    Name = "QQ",
+                    Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
+                    Value = random.Next(i * 10 + 10, i * 100 + 100)
+                });
+            _data.Add(new ChartData
+                {
+                    Name = "WeChat",
+                    Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
+                    Value = random.Next(i * 10 + 10, i * 100 + 100)
+                });
         }
 
         StateHasChanged();

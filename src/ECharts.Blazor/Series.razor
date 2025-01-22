@@ -1,9 +1,10 @@
 @inherits ChartItemBase
 @implements ISeries
 @typeparam T
+@typeparam TValue
 
 @code {
-    [Parameter] public SeriesTypes Type { get; set; }
+    protected virtual SeriesTypes Type { get; set; }
 
     [Parameter] public string? Name { get; set; }
 
@@ -11,30 +12,32 @@
 
     [Parameter] public IEnumerable<T>? Data { get; set; }
 
-    [Parameter] public Func<T, object?>? ValueField { get; set; }
+    [Parameter] public Func<T, TValue?>? ValueField { get; set; }
 
     [Parameter] public Func<T, object>? CategoryField { get; set; }
 
+    [Parameter] public Func<TValue?, string>? ValueFormatter { get; set; }
+
     public override Dictionary<string, object?> SerializeSettings()
     {
-        return new Dictionary<string, object?>()
+        return new Dictionary<string, object?>
         {
             { "type", Type.ToString().ToLower() },
             { "name", Name },
-            { "colorBy", ColorBy.ToString().ToLower() }
+            { "colorBy", ColorBy.ToString().ToLower() },
+            { "data", GetData() }
         };
     }
 
-    public enum SeriesColorBy
+    protected virtual object? GetData()
     {
-        Series,
-        Data
-    }
-
-    public enum SeriesTypes
-    {
-        Line,
-        Bar
+        return Data?.Select(x =>
+        {
+            var category = CategoryField?.Invoke(x) ?? x;
+            var value = ValueField == null ? default : ValueField.Invoke(x);
+            var tooltip = ValueFormatter?.Invoke(value ?? default(TValue));
+            return new[] { category, value, tooltip };
+        });
     }
 
 }

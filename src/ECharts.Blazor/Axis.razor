@@ -1,13 +1,25 @@
 @inherits ChartItemBase
 
 @code {
-    [Parameter] public bool Show { get; set; }
+    [Parameter] public bool Show { get; set; } = true;
+
+    [Parameter]
+    public virtual AxisTypes Type { get; set; }
+
+    public enum AxisTypes
+    {
+        Value,
+        Category,
+        Time,
+        Log
+    }
 
     public override Dictionary<string, object?> SerializeSettings()
     {
         return new Dictionary<string, object?>()
         {
-            { "show", Show }
+            { "show", Show },
+            { "type", Type.ToString().ToLower() }
         };
     }
 

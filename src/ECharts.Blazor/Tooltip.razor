@@ -1,0 +1,68 @@
+﻿@using System.Text.Json.Nodes
+@using Microsoft.JSInterop
+@inherits ChartItemBase
+@inject IJSRuntime Js
+<div id="@_id">
+    @if (TooltipData != null && Template != null)
+    {
+        @Template(TooltipData)
+    }
+
+</div>
+
+@code {
+
+    [Parameter] public bool Show { get; set; } = true;
+
+    [Parameter] public Triggers Trigger { get; set; } = Triggers.Item;
+
+    [Parameter] public RenderFragment<JsonArray>? Template { get; set; }
+
+    [Parameter] public string? ValueFormatter { get; set; }
+    private static readonly Dictionary<string, Tooltip> _tooltips = new();
+
+    private readonly string _id = Guid.NewGuid().ToString("N");
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        return new Dictionary<string, object?>
+        {
+            { "show", Show },
+            { "trigger", Trigger.ToString().ToLower() },
+            { "id", _id }
+        };
+    }
+
+    protected override void OnInitialized()
+    {
+        _tooltips[_id] = this;
+        base.OnInitialized();
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        _tooltips.Remove(_id);
+        await base.DisposeAsync();
+    }
+
+    public enum Triggers
+    {
+        Item,
+        Axis,
+        None
+    }
+
+    [JSInvokable("ValueFormatter")]
+    public static Task<string> ValueFormatterCallback(JsonObject data)
+    {
+        var id = data["id"].GetValue<string>();
+        var args = data["params"].AsArray();
+        var tooltip = _tooltips[id];
+        tooltip.TooltipData = args;
+        tooltip.StateHasChanged();
+        return Task.FromResult(string.Empty);
+    }
+
+    public JsonArray? TooltipData { get; set; }
+
+}

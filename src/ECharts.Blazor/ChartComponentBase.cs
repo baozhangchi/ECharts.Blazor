@@ -8,9 +8,20 @@ public abstract class ChartComponentBase : ComponentBase, ISerializeSettings
     {
         return new Dictionary<string, object?>();
     }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            HasRendered = true;
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected bool HasRendered { get; set; }
 }
 
-public interface ISerializeSettings
+internal interface ISerializeSettings
 {
     Dictionary<string, object?> SerializeSettings();
 }

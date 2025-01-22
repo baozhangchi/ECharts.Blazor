@@ -6,16 +6,23 @@
 @inject IJSRuntime Js
 <div id="@_id" style="@Style" class="@Class"></div>
 <CascadingValue TValue="IChartItemContainer" Value="this">
-    @ChildContent
+    <CascadingValue TValue="IJSObjectReference" Value="_module">
+        <CascadingValue TValue="string" Value="_id" Name="Id">
+            @ChildContent
+        </CascadingValue>
+    </CascadingValue>
 </CascadingValue>
 
 @code {
     private readonly string _id = Guid.NewGuid().ToString("N");
-    private IJSObjectReference? _moduleTask;
+    private IJSObjectReference? _module;
     private Timer? _timer;
     private Title? _title;
     private Legend? _legend;
     private readonly List<ISeries> _series = new();
+    private XAxis? _xAxis;
+    private YAxis? _yAxis;
+    private Tooltip? _tooltip;
     [Parameter] public string? Style { get; set; }
 
     [Parameter] public string? Class { get; set; }
@@ -33,6 +40,15 @@
             case ISeries series:
                 _series.Add(series);
                 break;
+            case XAxis xAxis:
+                _xAxis = xAxis;
+                break;
+            case YAxis yAxis:
+                _yAxis = yAxis;
+                break;
+            case Tooltip tooltip:
+                _tooltip = tooltip;
+                break;
         }
     }
 
@@ -49,6 +65,15 @@
             case ISeries series:
                 _series.Remove(series);
                 break;
+            case XAxis xAxis:
+                _xAxis = null;
+                break;
+            case YAxis yAxis:
+                _yAxis = null;
+                break;
+            case Tooltip tooltip:
+                _tooltip = null;
+                break;
         }
     }
 
@@ -58,7 +83,10 @@
         {
             { "title", _title?.SerializeSettings() },
             { "legend", _legend?.SerializeSettings() },
-            { "series", _series.Select(x => x.SerializeSettings()).ToArray() }
+            { "series", _series.Select(x => x.SerializeSettings()).ToArray() },
+            { "xAxis", _xAxis?.SerializeSettings() },
+            { "yAxis", _yAxis?.SerializeSettings() },
+            { "tooltip", _tooltip?.SerializeSettings() }
         };
     }
 
@@ -68,9 +96,9 @@
     {
         if (firstRender)
         {
-            _moduleTask = await Js.InvokeAsync<IJSObjectReference>(
+            _module = await Js.InvokeAsync<IJSObjectReference>(
                 "import", "./_content/ECharts.Blazor/echartsInterop.js");
-            await _moduleTask.InvokeVoidAsync("init", _id, SerializeSettings());
+            await _module.InvokeVoidAsync("init", _id, SerializeSettings());
             _timer = new Timer(300);
             _timer.Elapsed += TimerElapsed;
         }
@@ -81,7 +109,7 @@
         if (sender is Timer timer)
         {
             timer.Stop();
-            _moduleTask?.InvokeVoidAsync("setOption", _id, SerializeSettings());
+            _module?.InvokeVoidAsync("setOption", _id, SerializeSettings());
         }
     }
 
@@ -94,11 +122,11 @@
     public async ValueTask DisposeAsync()
     {
         _timer?.Dispose();
-        if (_moduleTask != null)
+        if (_module != null)
         {
             try
             {
-                await _moduleTask.DisposeAsync();
+                await _module.DisposeAsync();
             }
             catch (Exception e)
             {
