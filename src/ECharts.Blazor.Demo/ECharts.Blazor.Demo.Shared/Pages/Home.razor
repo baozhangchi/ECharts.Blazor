@@ -7,18 +7,28 @@
     <div style="flex:1;display:flex;flex-direction:row">
         <Chart Style="width:calc(50% - 10px);height:300px;">
             <Title Text="Line"></Title>
-            <Tooltip Trigger="@Tooltip.Triggers.Axis">
+            <Tooltip>
                 <Template>
                     <div>
                         @{
-                            var category = context[0]["name"].GetValue<string>();
-                            <div>@category</div>
-                        }
-                        @foreach (var item in context)
-                        {
-                            <div>
-                                <div>@(item["seriesName"].GetValue<string>())</div>
-                            </div>
+                            var category = context[0].Name;
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" style="text-align: justify;">@category</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in context)
+                                    {
+                                        <tr>
+                                            <td>@item.Marker</td>
+                                            <td>@(item.SeriesName)</td>
+                                            <td>@((item.Data[1].GetDouble()).ToString("P"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         }
                     </div>
                 </Template>
@@ -30,12 +40,12 @@
             {
                 var name = item.Key;
                 var data = item.ToList();
-                <LineSeries T="ChartData" Smooth="true" TValue="int" Symbol="SeriesSymbols.Circle" ShowSymbol="false" Data="@data" Name="@name" CategoryField="x => x.Category" ValueField="x => x.Value" ValueFormatter="@(x=>x.ToString("P"))"></LineSeries>
+                <LineSeries T="ChartData" Smooth="true" TValue="double" Symbol="SeriesSymbols.Circle" ShowSymbol="false" Data="@data" Name="@name" CategoryField="x => x.Category" ValueField="x => x.Value" ValueFormatter="@(x => x.ToString("P"))"></LineSeries>
             }
         </Chart>
         <Chart Style="width:calc(50% - 10px);height:300px;">
             <Title Text="Bar"></Title>
-            <Tooltip Trigger="@Tooltip.Triggers.Axis"></Tooltip>
+            <Tooltip></Tooltip>
             <Legend></Legend>
             <XAxis></XAxis>
             <YAxis></YAxis>
@@ -43,7 +53,7 @@
             {
                 var name = item.Key;
                 var data = item.ToList();
-                <BarSeries T="ChartData" TValue="int" Data="@data" Name="@name" CategoryField="x => x.Category" ValueField="x => x.Value"></BarSeries>
+                <BarSeries T="ChartData" TValue="double" Data="@data" Name="@name" CategoryField="x => x.Category" ValueField="x => x.Value" ValueFormatter="@(x=>x.ToString("P"))"></BarSeries>
             }
         </Chart>
     </div>
@@ -57,7 +67,7 @@
 
         public string Category { get; set; } = "";
 
-        public int Value { get; set; }
+        public double Value { get; set; }
     }
 
     List<ChartData> _data = new();
@@ -72,19 +82,19 @@
                 {
                     Name = "Email",
                     Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
-                    Value = random.Next(i * 10 + 10, i * 100 + 100)
+                    Value = random.NextDouble()
                 });
             _data.Add(new ChartData
                 {
                     Name = "QQ",
                     Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
-                    Value = random.Next(i * 10 + 10, i * 100 + 100)
+                    Value = random.NextDouble()
                 });
             _data.Add(new ChartData
                 {
                     Name = "WeChat",
                     Category = new DateTime(2021, i + 1, 1).ToString("MMM"),
-                    Value = random.Next(i * 10 + 10, i * 100 + 100)
+                    Value = random.NextDouble()
                 });
         }
 

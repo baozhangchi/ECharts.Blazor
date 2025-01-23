@@ -36,7 +36,7 @@
             var category = CategoryField?.Invoke(x) ?? x;
             var value = ValueField == null ? default : ValueField.Invoke(x);
             var tooltip = ValueFormatter?.Invoke(value ?? default(TValue));
-            return new[] { category, value, tooltip };
+            return new[] { category, value };
         });
     }
 

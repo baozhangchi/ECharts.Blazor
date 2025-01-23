@@ -27,14 +27,21 @@ function initOption(elementId, option) {
         return;
     }
 
-    option.tooltip.formatter = (params, ticket, callback) => {
-        DotNet.invokeMethodAsync('ECharts.Blazor', 'ValueFormatter', { id: option.tooltip.id, params: params, ticket: ticket }).then(res => {
-            let element = document.getElementById(option.tooltip.id);
-            console.log(element);
-            let html = element.innerHTML;
-            callback(ticket, html)
-        });
-        return 'Loading';
+    if (option.tooltip.hasFormatter) {
+        option.tooltip.formatter = (params, ticket, callback) => {
+            DotNet.invokeMethodAsync('ECharts.Blazor', 'ValueFormatter', { id: option.tooltip.id, params: params, ticket: ticket }).then(res => {
+                let element = document.getElementById(option.tooltip.id);
+                let html = element.innerHTML;
+                console.log(html);
+                if (html) {
+                    callback(ticket, html)
+                }
+                else {
+                    callback(ticket, null)
+                }
+            });
+            return 'Loading';
+        }
     }
 }
 

@@ -1,11 +1,12 @@
-﻿@using System.Text.Json.Nodes
+﻿@using System.Text.Json
+@using System.Text.Json.Nodes
+@using System.Text.Json.Serialization
 @using Microsoft.JSInterop
 @inherits ChartItemBase
-@inject IJSRuntime Js
-<div id="@_id">
-    @if (TooltipData != null && Template != null)
+<div id="@_id" style="display:none;">
+    @if (_tooltipData != null && Template != null)
     {
-        @Template(TooltipData)
+        @Template(_tooltipData)
     }
 
 </div>
@@ -14,11 +15,8 @@
 
     [Parameter] public bool Show { get; set; } = true;
 
-    [Parameter] public Triggers Trigger { get; set; } = Triggers.Item;
+    [Parameter] public RenderFragment<TooltipTemplateData[]>? Template { get; set; }
 
-    [Parameter] public RenderFragment<JsonArray>? Template { get; set; }
-
-    [Parameter] public string? ValueFormatter { get; set; }
     private static readonly Dictionary<string, Tooltip> _tooltips = new();
 
     private readonly string _id = Guid.NewGuid().ToString("N");
@@ -28,8 +26,9 @@
         return new Dictionary<string, object?>
         {
             { "show", Show },
-            { "trigger", Trigger.ToString().ToLower() },
-            { "id", _id }
+            { "trigger", "axis" },
+            { "id", _id },
+            { "hasFormatter", Template != null }
         };
     }
 
@@ -45,24 +44,40 @@
         await base.DisposeAsync();
     }
 
-    public enum Triggers
-    {
-        Item,
-        Axis,
-        None
-    }
-
     [JSInvokable("ValueFormatter")]
     public static Task<string> ValueFormatterCallback(JsonObject data)
     {
         var id = data["id"].GetValue<string>();
-        var args = data["params"].AsArray();
         var tooltip = _tooltips[id];
-        tooltip.TooltipData = args;
-        tooltip.StateHasChanged();
+        tooltip.SetTooltipData(data["params"]);
         return Task.FromResult(string.Empty);
     }
 
-    public JsonArray? TooltipData { get; set; }
+    private void SetTooltipData(JsonNode? data)
+    {
+        _tooltipData = data?.Deserialize<TooltipTemplateData[]>();
+        StateHasChanged();
+    }
+
+    private TooltipTemplateData[]? _tooltipData;
+
+
+    public class TooltipTemplateData
+    {
+        [JsonPropertyName("name")] public string? Name { get; set; }
+
+        [JsonPropertyName("seriesName")] public string? SeriesName { get; set; }
+
+        [JsonPropertyName("marker")] [JsonInclude]
+        private string? _markerString;
+
+        public MarkupString? Marker => new MarkupString(_markerString ?? string.Empty);
+
+        [JsonPropertyName("color")] public string? Color { get; set; }
+
+        [JsonPropertyName("data")] public JsonElement[]? Data { get; set; }
+
+        [JsonPropertyName("value")] public JsonElement[]? Value { get; set; }
+    }
 
 }
