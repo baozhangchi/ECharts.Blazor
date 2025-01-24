@@ -1,0 +1,30 @@
+@inherits Series<T, TValue>
+@typeparam T
+@typeparam TValue
+@implements IChartItemContainer
+<CascadingValue TValue="IChartItemContainer" Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code
+{
+    [Parameter] public string CenterX { get; set; } = "50%";
+    [Parameter] public string CenterY { get; set; } = "50%";
+    [Parameter] public string radius { get; set; } = "75%";
+    [Parameter] public bool legendHoverLink { get; set; } = true;
+    [Parameter] public double startAngle { get; set; } = 255;
+    [Parameter] public double endAngle { get; set; } = -45;
+    [Parameter] public bool clockwise { get; set; } = true;
+    [Parameter] public double min { get; set; }
+    [Parameter] public double max { get; set; } = 100;
+    [Parameter] public uint splitNumber { get; set; } = 10;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    public void Add(IChartItem item)
+    {
+    }
+
+    public void Remove(IChartItem item)
+    {
+    }
+}

@@ -1,0 +1,56 @@
+@inherits ChartItemBase
+
+@code {
+    [Parameter] public bool Show { get; set; }
+
+    [Parameter] public string Left { get; set; } = "10%";
+
+    [Parameter] public string Top { get; set; } = "60";
+
+    [Parameter] public string Right { get; set; } = "10%";
+
+    [Parameter] public string Bottom { get; set; } = "60";
+
+    [Parameter] public string Width { get; set; } = "auto";
+
+    [Parameter] public string Height { get; set; } = "auto";
+
+    [Parameter] public bool ContainLabel { get; set; }
+
+    [Parameter] public string BackgroundColor { get; set; } = "transparent";
+
+    [Parameter] public string BorderColor { get; set; } = "#CCC";
+
+    [Parameter] public double BorderWidth { get; set; } = 1;
+
+    [Parameter] public double ShadowBlur { get; set; }
+
+    [Parameter] public string? ShadowColor { get; set; }
+
+    [Parameter] public double ShadowOffsetX { get; set; }
+
+    [Parameter] public double ShadowOffsetY { get; set; }
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        return new Dictionary<string, object?>()
+        {
+            { "show", Show },
+            { "left", Left },
+            { "top", Top },
+            { "right", Right },
+            { "bottom", Bottom },
+            { "width", Width },
+            { "height", Height },
+            { "containLabel", ContainLabel },
+            { "backgroundColor", BackgroundColor },
+            { "borderColor", BorderColor },
+            { "borderWidth", BorderWidth },
+            { "shadowBlur", ShadowBlur },
+            { "shadowColor", ShadowColor },
+            { "shadowOffsetX", ShadowOffsetX },
+            { "shadowOffsetY", ShadowOffsetY }
+        };
+    }
+
+}

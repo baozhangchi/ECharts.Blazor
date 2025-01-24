@@ -1,10 +1,12 @@
 @inherits ChartItemBase
 
 @code {
+    private AxisLabel? _axisLabel;
     [Parameter] public bool Show { get; set; } = true;
-
-    [Parameter]
-    public virtual AxisTypes Type { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Min { get; set; }
+    [Parameter] public string? Max { get; set; }
+    [Parameter] public virtual AxisTypes Type { get; set; }
 
     public enum AxisTypes
     {
@@ -14,12 +16,33 @@
         Log
     }
 
+    public void Add(IChartItem item)
+    {
+        switch (item)
+        {
+            case AxisLabel axisLabel:
+                _axisLabel = axisLabel;
+                break;
+        }
+    }
+
+    public void Remove(IChartItem item)
+    {
+        switch (item)
+        {
+            case AxisLabel axisLabel:
+                _axisLabel = null;
+                break;
+        }
+    }
+
     public override Dictionary<string, object?> SerializeSettings()
     {
-        return new Dictionary<string, object?>()
+        return new Dictionary<string, object?>
         {
             { "show", Show },
-            { "type", Type.ToString().ToLower() }
+            { "type", Type.ToString().ToLower() },
+            { "axisLabel", _axisLabel?.SerializeSettings() }
         };
     }
 

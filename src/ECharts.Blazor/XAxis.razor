@@ -1,5 +1,20 @@
 ﻿@inherits Axis
 
 @code {
-    public override AxisTypes Type { get; set; } = AxisTypes.Category;
+    [Parameter] public override AxisTypes Type { get; set; } = AxisTypes.Category;
+    [Parameter] public XAxisPositions Position { get; set; } = XAxisPositions.Bottom;
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        var settings = base.SerializeSettings();
+        settings["position"] = Position.ToString().ToLower();
+        return settings;
+    }
+
+    public enum XAxisPositions
+    {
+        Top,
+        Bottom
+    }
+
 }

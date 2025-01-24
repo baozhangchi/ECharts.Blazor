@@ -23,6 +23,7 @@
     private XAxis? _xAxis;
     private YAxis? _yAxis;
     private Tooltip? _tooltip;
+    private Grid? _grid;
     [Parameter] public string? Style { get; set; }
 
     [Parameter] public string? Class { get; set; }
@@ -49,6 +50,9 @@
             case Tooltip tooltip:
                 _tooltip = tooltip;
                 break;
+            case Grid grid:
+                _grid = grid;
+                break;
         }
     }
 
@@ -74,6 +78,9 @@
             case Tooltip tooltip:
                 _tooltip = null;
                 break;
+            case Grid grid:
+                _grid = null;
+                break;
         }
     }
 
@@ -86,7 +93,8 @@
             { "series", _series.Select(x => x.SerializeSettings()).ToArray() },
             { "xAxis", _xAxis?.SerializeSettings() },
             { "yAxis", _yAxis?.SerializeSettings() },
-            { "tooltip", _tooltip?.SerializeSettings() }
+            { "tooltip", _tooltip?.SerializeSettings() },
+            { "grid", _grid?.SerializeSettings() }
         };
     }
 

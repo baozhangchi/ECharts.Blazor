@@ -26,5 +26,7 @@ public enum SeriesColorBy
 public enum SeriesTypes
 {
     Line,
-    Bar
+    Bar,
+    Pie,
+    Gauge
 }

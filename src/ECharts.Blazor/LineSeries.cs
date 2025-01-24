@@ -4,7 +4,7 @@ namespace ECharts.Blazor;
 
 public class LineSeries<T, TValue> : Series<T, TValue>
 {
-    protected override SeriesTypes Type { get; set; } = SeriesTypes.Line;
+    protected override SeriesTypes Type { get; } = SeriesTypes.Line;
     [Parameter] public bool Smooth { get; set; }
     [Parameter] public SeriesSymbols Symbol { get; set; } = SeriesSymbols.EmptyCircle;
 
@@ -18,9 +18,4 @@ public class LineSeries<T, TValue> : Series<T, TValue>
         settings.Add("showSymbol", ShowSymbol);
         return settings;
     }
-}
-
-public class BarSeries<T, TValue> : Series<T, TValue>
-{
-    protected override SeriesTypes Type { get; set; } = SeriesTypes.Bar;
 }

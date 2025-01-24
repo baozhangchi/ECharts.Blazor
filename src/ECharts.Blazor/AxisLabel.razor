@@ -1,0 +1,42 @@
+@inherits ChartItemBase
+
+@code {
+    private double _rotate;
+    [Parameter] public bool Show { get; set; } = true;
+
+    [Parameter] public bool Inside { get; set; } = true;
+
+    [Parameter]
+    public double Rotate
+    {
+        get => _rotate;
+        set
+        {
+            value = Math.Min(90d, Math.Max(-90d, value));
+            _rotate = value;
+        }
+    }
+
+    [Parameter] public string? ValueFormatter { get; set; }
+
+    [Parameter] public bool ShowMinLabel { get; set; }
+
+    [Parameter] public bool ShowMaxLabel { get; set; }
+
+    [Parameter] public bool HideOverlap { get; set; }
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        return new Dictionary<string, object?>()
+        {
+            { "show", Show },
+            { "inside", Inside },
+            { "rotate", Rotate },
+            { "valueFormatter", ValueFormatter },
+            { "showMinLabel", ShowMinLabel },
+            { "showMaxLabel", ShowMaxLabel },
+            { "hideOverlap", HideOverlap }
+        };
+    }
+
+}

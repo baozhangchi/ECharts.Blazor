@@ -1,5 +1,21 @@
 ﻿@inherits Axis
 
 @code {
-    public override AxisTypes Type { get; set; } = AxisTypes.Value;
+    [Parameter] public override AxisTypes Type { get; set; } = AxisTypes.Value;
+
+    [Parameter] public YAxisPositions Position { get; set; } = YAxisPositions.Left;
+
+    public override Dictionary<string, object?> SerializeSettings()
+    {
+        var settings = base.SerializeSettings();
+        settings["position"] = Position.ToString().ToLower();
+        return settings;
+    }
+
+    public enum YAxisPositions
+    {
+        Left,
+        Right
+    }
+
 }
